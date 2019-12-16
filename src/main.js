@@ -14,6 +14,8 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import tipTool from '@/utils/element'
+import commReg from '@/utils/commReg'
 
 /**
  * If you don't want to use mock-server
@@ -28,6 +30,9 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
+Vue.prototype.$tip = tipTool
+// 公共正则
+Vue.prototype.$reg = commReg
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明

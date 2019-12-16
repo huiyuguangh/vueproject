@@ -8,7 +8,7 @@
  * @param {string} cFormat
  * @returns {string | null}
  */
-export function parseTime(time, cFormat) {
+export function parseTimeFomate(time, cFormat) {
   if (arguments.length === 0) {
     return null
   }
@@ -70,7 +70,7 @@ export function formatTime(time, option) {
     return '1天前'
   }
   if (option) {
-    return parseTime(time, option)
+    return parseTimeFomate(time, option)
   } else {
     return (
       d.getMonth() +

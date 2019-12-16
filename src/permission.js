@@ -32,9 +32,16 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          await store.dispatch('user/getInfo')
-
-          next()
+          const uinfo = await store.dispatch('user/getInfo')
+          const qroles = uinfo.roles
+          console.log('qroles', qroles)
+          await store.dispatch('routerPermission/getGenRouter', qroles)
+          console.log('store.getters.asyncRouters', store.getters.asyncRouters)
+          router.addRoutes(store.getters.asyncRouters)
+          next({
+            ...to,
+            replace: true
+          })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
