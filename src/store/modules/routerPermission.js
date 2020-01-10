@@ -8,14 +8,16 @@ const state = {
 const mutations = {
   SET_ROUTERS(state, routers) {
     state.asAddRouter = routers
-    state.routers = state.routers.concat(routers)
+    state.routers = constantRoutes.concat(routers)
   }
 }
 const actions = {
   getGenRouter({ commit }, roles) {
     return new Promise((resolve, reject) => {
-      const newRouterMap = generateInitRoutersMap
+      const newRouterMap = generateInitRoutersMap()
+      // console.log('newRouterMap', newRouterMap)
       const filterrouter = filterAsyncRouters(newRouterMap, roles)
+      // console.log('filterrouter', filterrouter)
       commit('SET_ROUTERS', filterrouter)
       resolve()
     })
