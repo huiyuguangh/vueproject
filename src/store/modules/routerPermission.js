@@ -8,7 +8,7 @@ const state = {
 const mutations = {
   SET_ROUTERS(state, routers) {
     state.asAddRouter = routers
-    state.routers = constantRoutes.concat(routers)
+    state.routers = constantRoutes.concat(routers).concat({ path: '*', redirect: '/404', hidden: true })
   }
 }
 const actions = {

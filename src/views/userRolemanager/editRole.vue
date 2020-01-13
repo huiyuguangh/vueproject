@@ -4,7 +4,7 @@
       <el-input v-model="dataForm.roleName" maxlength="20" />
     </el-form-item>
     <el-form-item label="角色code" prop="roleCode">
-      <el-input v-model="dataForm.roleCode" maxlength="20" />
+      <el-input v-model="dataForm.roleCode" maxlength="20" disabled />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" :loading="uploadLoading" @click="editRoleHandler">
