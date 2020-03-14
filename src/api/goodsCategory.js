@@ -7,6 +7,14 @@ export function getGoodsTypeList() {
   })
 }
 
+export function getGoodsType() {
+  return request({
+    url: '/goods/tGoodsType/getGoodsType',
+    method: 'post'
+  })
+}
+
+
 export function addGoodsType(param) {
   return request({
     url: '/goods/tGoodsType/insertGoodsType',
