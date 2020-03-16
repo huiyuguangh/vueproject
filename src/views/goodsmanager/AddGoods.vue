@@ -12,7 +12,7 @@
       <el-input v-model="dataForm.goodsPrice" placeholder="请输入商品价格" maxlength="20" />
     </el-form-item>
     <el-form-item label="商品标题" prop="goodsTitle">
-      <el-input v-model="dataForm.goodsTitle" placeholder="请输入商品标题" maxlength="20" />
+      <el-input v-model="dataForm.goodsTitle" placeholder="请输入商品标题" maxlength="40" />
     </el-form-item>
     <el-form-item ref="gPhotoRef" label="商品图片" prop="goodsPhoto">
       <el-upload
@@ -53,6 +53,15 @@ import { uploadGoodsPhoto, insertGoodsInfo } from '@/api/goods'
 import { getGoodsTypeList } from '@/api/goodsCategory'
 export default {
   data() {
+    const checkPrice = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入商品价格'))
+      } else if (this.isPrice(value)) {
+        callback(new Error('商品价格格式必须为整数或者小数'))
+      } else {
+        callback()
+      }
+    }
     return {
       filelist: [],
       goodstypelist: [],
@@ -84,7 +93,7 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            message: '请输入商品价格'
+            validator: checkPrice
           }
         ],
         goodsTitle: [
@@ -124,6 +133,7 @@ export default {
 
       })
     },
+    // 选择图片成功之后去掉图片验证
     onchanges(file, fileList) {
       console.log(file)
       if (fileList.length > 0) {
@@ -131,6 +141,7 @@ export default {
         this.$refs.gPhotoRef.clearValidate()
       }
     },
+    // 删除图片成功之后加上图片验证
     onRemoveMethod(file, fileList) {
       if (fileList.length === 0) {
         this.rules.goodsPhoto = [{
@@ -231,6 +242,10 @@ export default {
       }).catch(() => {
         this.addloging = false
       })
+    },
+    // 价格格式验证
+    isPrice(value) {
+      return !this.$reg.regPrice.test(value)
     }
   }
 }

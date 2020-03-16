@@ -24,3 +24,27 @@ export function uploadGoodsPhoto(param) {
   })
 }
 
+export function delGoodsInfoById(param) {
+  return request({
+    url: '/goods/tGoods/delGoodsInfoById',
+    method: 'post',
+    data: request.qs.stringify(param)
+  })
+}
+
+export function getGoodsInfoById(param) {
+  return request({
+    url: '/goods/tGoods/getGoodsInfoById',
+    method: 'post',
+    data: request.qs.stringify(param)
+  })
+}
+
+export function editGoodsInfo(param) {
+  return request({
+    url: '/goods/tGoods/editGoodsInfo',
+    method: 'post',
+    data: param
+  })
+}
+

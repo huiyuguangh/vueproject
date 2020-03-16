@@ -90,22 +90,27 @@
         @current-change="current_change"
       />
     </div>
-    <el-dialog v-if="addGoodsStatus" :visible.sync="addGoodsStatus" title="新增商品信息" :modal-close="false" :escape-close="false" :before-close="addGateTypeViewClose">
-      <AddGoods ref="addGoodsView" @AddGoodsEmit="addGoodsCommit" @cancelhandler="cacelHandlerCimmit"/>
+    <el-dialog v-if="addGoodsStatus" :visible.sync="addGoodsStatus" title="新增商品信息" :modal-close="false" :escape-close="false" :before-close="addGoodsViewClose">
+      <AddGoods ref="addGoodsView" @AddGoodsEmit="addGoodsCommit" @cancelhandler="cacelHandlerCimmit" />
+    </el-dialog>
+    <el-dialog v-if="editGoodsStatus" :visible.sync="editGoodsStatus" title="编辑商品信息" :modal-close="false" :escape-close="false" :before-close="editGoodsViewClose">
+      <EditGoods ref="editGoodsView" :edit-data="editData" @editGoodsEmit="editGoodsCommit" @editCancelHandler="editGoodsCancelCommit" />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { parseTimeFomate } from '@/utils'
-import { getGoodsInfoList } from '@/api/goods'
+import { getGoodsInfoList, delGoodsInfoById } from '@/api/goods'
 import { getGoodsType } from '@/api/goodsCategory'
 import AddGoods from './AddGoods'
+import EditGoods from './EditGoods'
 
 export default {
   name: 'GoodsInfo',
   components: {
-    AddGoods
+    AddGoods,
+    EditGoods
   },
   data() {
     return {
@@ -116,7 +121,9 @@ export default {
       pageIndex: 1,
       pageSize: 2,
       total: 0,
-      addGoodsStatus: false
+      addGoodsStatus: false,
+      editGoodsStatus: false,
+      editData: {}
     }
   },
   created() {
@@ -158,7 +165,7 @@ export default {
     // 分页方法
     current_change(pageIndex) {
       this.pageIndex = pageIndex
-      this.fetchData(this.pageIndex)
+      this.fetchData(this.pageIndex, this.gTypecode)
     },
     // 新增商品方法
     addCategoryTypeMethod() {
@@ -166,31 +173,70 @@ export default {
     },
     // 编辑商品方法
     edit(row) {
-
+      this.editData = row
+      this.editGoodsStatus = true
     },
     // 删除商品方法
     del(row) {
-
+      this.$tip.msgBox.confirm({
+        title: '提示',
+        message: '确定要删除记录吗?',
+        confirmText: '确定'
+      }).then(() => {
+        const id = row.id
+        delGoodsInfoById({ 'id': id }).then(res => {
+          if (res.status) {
+            this.$tip.notify.open({
+              type: 'success',
+              message: `删除商品信息成功`,
+              showClose: true
+            })
+            this.fetchData(1, this.gTypecode)
+          } else {
+            this.$tip.notify.open({
+              type: 'error',
+              message: '删除商品信息失败',
+              showClose: true
+            })
+          }
+        }).catch(() => {})
+      }).catch(() => {})
     },
     // 选择产品类型方法
     chooseGoodsType(code) {
       this.gTypecode = code
+      this.pageIndex = 1
       this.fetchData(this.pageIndex, this.gTypecode)
     },
     // 取消新增商品
     cacelHandlerCimmit() {
       this.addGoodsStatus = false
     },
+    // 取消编辑商品
+    editGoodsCancelCommit() {
+      this.editGoodsStatus = false
+    },
     // 新增商品确定按钮
     addGoodsCommit(status) {
       if (status) {
         this.addGoodsStatus = false
-        this.fetchData(this.pageIndex,this.gTypecode)
+        this.fetchData(this.pageIndex, this.gTypecode)
       }
     },
-    // 关闭弹出层方法
-    addGateTypeViewClose() {
-
+    // 关闭新智能弹出层方法
+    addGoodsViewClose() {
+      this.$refs.addGoodsView.cancelhandler()
+    },
+    // 关闭编辑弹出层方法
+    editGoodsViewClose() {
+      this.$refs.editGoodsView.cancelhandler()
+    },
+    // 编辑商品信息确定按钮回调方法
+    editGoodsCommit(status) {
+      if (status) {
+        this.editGoodsStatus = false
+        this.fetchData(this.pageIndex, this.gTypecode)
+      }
     }
   }
 }
